@@ -1,0 +1,71 @@
+<%- include("../partials/head.ejs") %>
+    <%- include("../partials/navbar.ejs") %>
+        <div class="row">
+            <div class="col-md-6 offset-3">
+                <h1 class="text-center">Edit Campground</h1>
+                <form action="/campgrounds/<%= campground._id %>?_method=put" method="post" class="needs-validation"
+                    novalidate enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="<%=campground.title%>"
+                            aria-label="EditTitle" required>
+                        <div class="invalid-feedback">
+                            This field is required
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">$</span>
+                            <input type="text" id="price" name="price" class="form-control"
+                                value="<%=campground.price%>" aria-label="editPrice" required>
+                            <div class="invalid-feedback">
+                                This field is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location"
+                            value="<%=campground.location%>" aria-label="EditLocation" required>
+                        <div class="invalid-feedback">
+                            This field is required
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" type="text" id="description" name="description"
+                            aria-label="editDescription" style="max-height: 150px"
+                            required><%=campground.description%></textarea>
+                        <div class="invalid-feedback">
+                            This field is required
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Add More Images</label>
+                        <input type="file" name="image" id="image" class="form-control" multiple>
+                    </div>
+                    <div class="mb-4">
+                        <% campground.image.forEach((img,i)=>{ %>
+                            <img class="img-thumbnail-inline" src="<%= img.thumbnail %>" alt="">
+                            <div class="form-check-inline">
+                                <input class="form-check-input" name="deleteImg[]" type="checkbox"
+                                    value="<%= img.filename %>" id="image-<%= i %>">
+                                <label class="form-check-label" for="image-<%= i %>">
+                                    Delete
+                                </label>
+                            </div>
+                            <% }) %>
+                    </div>
+
+
+                    <button class="btn btn-success mb-3" style="display: inline;">Update</button>
+                    <a class="btn btn-danger mb-3" href="/campgrounds/<%= campground._id %>">Cancel</a>
+                </form>
+
+            </div>
+        </div>
+
+
+        <%- include("../partials/foot.ejs") %>

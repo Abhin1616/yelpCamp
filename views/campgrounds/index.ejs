@@ -1,0 +1,51 @@
+<%- include("../partials/head.ejs") %>
+    <%- include("../partials/navbar.ejs") %>
+        <%- include("../partials/flash.ejs") %>
+            <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+            <div id="map" style="width: 100%; height: 500px;"></div>
+            <h1>All Campgrounds</h1>
+            <h3><a href="/campgrounds/new">Create New Campground</a></h3>
+
+            <% for(let campground of allCampgrounds){%>
+                <div class="card mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <% if(campground.image.length){ %>
+                                <img class="card-img" src="<%= campground.image[0].url %>" alt="">
+                                <% }else{ %>
+                                    <img class="card-img"
+                                        src="https://propertywiselaunceston.com.au/wp-content/themes/property-wise/images/no-image.png"
+                                        alt="">
+                                    <% } %>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= campground.title %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= campground.description %>
+                                </p>
+                                <p class="card-text">
+                                    <small class="text-muted ">
+                                        <%= campground.location %>
+                                    </small>
+
+                                </p>
+                                <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">View <%=
+                                        campground.title %></a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <% } %>
+                    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+                    <script>
+                        const campgrounds = {features: <%- JSON.stringify(allCampgrounds) %>}
+                    </script>
+
+                    <script src="/js/indexClusterMap.js">
+                    </script>
+                    <%- include("../partials/foot.ejs") %>

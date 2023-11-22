@@ -1,0 +1,146 @@
+<%- include("../partials/head.ejs") %>
+    <%- include("../partials/navbar.ejs") %>
+        <%- include("../partials/flash.ejs") %>
+            <link rel="stylesheet" href="/css/ratingStar.css">
+
+
+            <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+
+            <div class="row">
+                <div class="col-6">
+                    <div id='map' style='height: 300px;'></div>
+                    <div class="card mb-5">
+                        <div id="carouselExample" class="carousel slide">
+                            <div class="carousel-inner">
+                                <% campground.image.forEach((img,i)=> {%>
+                                    <div class="carousel-item <%= i === 0?" active":"" %>">
+
+                                        <img src="<%= img.url %>" class="d-block w-100 img-fluid" alt="..."
+                                            style="height: 360px">
+                                    </div>
+                                    <% }) %>
+                            </div>
+                            <% if(campground.image.length>1){ %>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                                    data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                                    data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                                <% } %>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= campground.title %>
+                            </h5>
+                            <p class="card-text">
+                                <%= campground.description %>
+                            </p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item text-muted">
+                                <%= campground.location %>
+                            </li>
+                            <li class="list-group-item">$<%= campground.price %>/night</li>
+                            <li class="list-group-item">
+                                Posted by <%= campground.author.username %>
+                            </li>
+                        </ul>
+                        <% if(currentUser && campground.author.equals(currentUser._id )){ %>
+                            <div class="card-body">
+                                <a class="btn btn-success" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                                <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE"
+                                    method="post">
+                                    <button class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                            <% } %>
+                                <div class="border-top card-footer">
+                                    <p><a href="/campgrounds">All Campgrounds</a></p>
+                                </div>
+                    </div>
+                </div>
+                <% if(currentUser){ %>
+                    <div class="col-6">
+                        <div class="card-body">
+                            <h2>Leave a Review</h2>
+                        </div>
+                        <form class="needs-validation" action="/campgrounds/<%= campground._id %>/reviews" method="post"
+                            novalidate>
+                            <fieldset class="starability-basic card-body">
+
+                                <input type="radio" id="first-rate1" name="rating" value="1" checked
+                                    aria-label="No rating." />
+                                <label for="first-rate1" title="Terrible">1 star</label>
+                                <input type="radio" id="first-rate2" name="rating" value="2" />
+                                <label for="first-rate2" title="Not good">2 stars</label>
+                                <input type="radio" id="first-rate3" name="rating" value="3" />
+                                <label for="first-rate3" title="Average">3 stars</label>
+                                <input type="radio" id="first-rate4" name="rating" value="4" />
+                                <label for="first-rate4" title="Very good">4 stars</label>
+                                <input type="radio" id="first-rate5" name="rating" value="5" />
+                                <label for="first-rate5" title="Amazing">5 stars</label>
+                            </fieldset>
+                            <div class="card-body mb-3">
+                                <label for="body" class="form-label">Review</label>
+                                <textarea class="form-control" id="body" name="body" cols="30" rows="3"
+                                    required></textarea>
+                            </div>
+                            <div class="card-body mb-3">
+                                <button class="btn btn-success">Submit</button>
+                            </div>
+                        </form>
+                        <% } %>
+
+                            <% if(!currentUser){ %>
+                                <div class="col-6">
+                                    <% } %>
+
+                                        <h2 class="">Reviews</h2>
+                                        <% for(let review of campground.reviews){ %>
+                                            <div class="card mb-3">
+                                                <h5 class="card-title mt-3 mx-3">
+                                                    <%-review.author.username %>
+                                                </h5>
+                                                <p class="card-text mb-2 mx-2">
+
+                                                <p class="starability-result mx-2" data-rating="<%= review.rating %>">
+
+                                                </p>
+                                                <p class="mx-3">Review: <%= review.body %>
+                                                </p>
+
+                                                <% if(currentUser && review.author._id.equals(currentUser._id )){ %>
+                                                    <form
+                                                        action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
+                                                        method="post">
+                                                        <div class="mx-2"><button
+                                                                class="btn btn-sm btn-danger">Delete</button>
+                                                        </div>
+
+                                                    </form>
+                                                    <% } %>
+                                                        </p>
+                                            </div>
+                                            <% } %>
+                                                <% if(!currentUser){ %>
+                                </div>
+                                <% } %>
+
+
+                    </div>
+
+
+            </div>
+            <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+            <script>
+                const mapToken = "<%- process.env.MAPBOX_TOKEN %>"
+                const campground = <%- JSON.stringify(campground) %>
+            </script>
+            <script src="/js/showMap.js"></script>
+
+            <%- include("../partials/foot.ejs") %>
